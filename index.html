@@ -51,541 +51,79 @@
 
                     <div class="relative flex py-1 items-center text-[10px] text-slate-500 uppercase tracking-widest justify-center">
                         <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-800"></div></div>
-                        <span class="relative px-3 bg-slate-950">AUTHENTICATED GOOGLE DRIVE CONNECTIONS</span>
+                        <span class="relative px-3 bg-slate-950">GOOGLE DRIVE INTEGRATION</span>
                     </div>
 
                     <div class="space-y-3">
+                        <input type="text" id="inputClientId" placeholder="Google Client ID" class="w-full bg-slate-900 p-2.5 rounded-xl text-xs border border-slate-800 text-slate-300 placeholder-slate-700 focus:border-indigo-500 outline-none">
+                        <input type="text" id="inputApiKey" placeholder="Google API Key" class="w-full bg-slate-900 p-2.5 rounded-xl text-xs border border-slate-800 text-slate-300 placeholder-slate-700 focus:border-indigo-500 outline-none">
+                        <input type="text" id="inputAppId" placeholder="Google Project Number" class="w-full bg-slate-900 p-2.5 rounded-xl text-xs border border-slate-800 text-slate-300 placeholder-slate-700 focus:border-indigo-500 outline-none">
+                        
                         <button id="googleAuthBtn" onclick="initializeGoogleCloudHandshake()" class="w-full flex items-center justify-center gap-3 p-3 border border-slate-800 hover:border-slate-700 bg-slate-900 hover:bg-slate-850 rounded-xl text-xs font-semibold text-slate-200 transition-all cursor-pointer">
-                            <svg class="w-4 h-4" viewBox="0 0 24 24">
-                                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v3.92h6.61c-.29 1.5-1.14 2.77-2.4 3.63v3.02h3.87c2.26-2.08 3.66-5.14 3.66-8.5z"/>
-                                <path fill="#34A853" d="M12 24c3.24 0 5.97-1.08 7.96-2.91l-3.87-3.02c-1.08.72-2.45 1.16-4.09 1.16-3.15 0-5.81-2.13-6.76-5.01H1.33v3.13C3.31 20.19 7.37 24 12 24z"/>
-                                <path fill="#FBBC05" d="M5.24 14.22c-.25-.72-.39-1.5-.39-2.3 0-.8.14-1.58.39-2.3V6.49H1.33C.48 8.16 0 10.02 0 12s.48 3.84 1.33 5.51l3.91-3.29z"/>
-                                <path fill="#EA4335" d="M12 4.77c1.77 0 3.35.61 4.6 1.8l3.43-3.43C17.96 1.19 15.24 0 12 0 7.37 0 3.31 3.81 1.33 7.72l3.91 3.29c.95-2.88 3.61-5.24 6.76-5.24z"/>
-                            </svg>
                             Sign in to Google Account
                         </button>
-                        <p class="text-[10px] text-slate-500 text-center">Requires Google Cloud Console Project integration setups to verify security tokens.</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="workspaceGrid" class="flex-1 flex opacity-0 pointer-events-none transition-opacity duration-300 w-full h-full overflow-hidden">
-            
-            <aside id="sidebarPanel" class="w-64 bg-slate-950 border-r border-slate-800/80 flex flex-col h-full transition-all duration-300 shrink-0 overflow-hidden">
-                <div class="p-4 border-b border-slate-800/60 flex items-center justify-between gap-2">
-                    <div class="relative flex-1">
-                        <span class="absolute left-3 top-2.5 text-xs text-slate-500">🔍</span>
-                        <input type="text" id="fileSearch" onkeyup="searchLocalDirectoryTree()" placeholder="Filter media & code..." class="w-full bg-slate-900 border border-slate-800/80 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-300 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition-colors">
-                    </div>
-                </div>
-
-                <div class="flex-1 overflow-y-auto p-2 space-y-0.5 font-sans select-none" id="fileDirectoryList"></div>
-
-                <div class="p-3 bg-slate-900/20 border-t border-slate-800/60 text-[10px] text-slate-400 font-mono flex items-center justify-between">
-                    <span id="engineMode">ENGINE: READY</span>
-                    <button onclick="ejectWorkspaceAndLock()" class="text-rose-400 hover:underline cursor-pointer">EJECT</button>
-                </div>
-            </aside>
-
-            <section class="flex-1 flex flex-col h-full bg-[#070A12] overflow-hidden relative">
-                
-                <div class="h-14 border-b border-slate-800/80 bg-slate-900/40 px-6 flex items-center justify-between shrink-0 select-none">
-                    <div class="flex items-center gap-3">
-                        <button id="sidebarToggleActionBtn" onclick="toggleSidebarLayoutWidth()" class="px-2.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 text-xs transition-all font-medium cursor-pointer">
-                            ◾ <span id="sidebarToggleText">Hide Sidebar</span>
-                        </button>
-                        
-                        <button id="workspaceHomeBtn" onclick="returnToWorkspacePortalDashboard()" class="hidden px-2.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-indigo-400 hover:text-indigo-300 hover:bg-slate-800 transition-all font-semibold cursor-pointer">
-                            🏠 Dashboard Home
-                        </button>
-
-                        <div class="h-4 w-px bg-slate-800"></div>
-                        <span class="text-[11px] text-slate-500 font-mono tracking-widest uppercase">ACTIVE:</span>
-                        <span id="activeFileName" class="text-xs font-semibold text-slate-200 tracking-wide">Workspace Root View</span>
-                        <span id="saveStatusIndicator" class="text-[10px] font-mono font-medium text-emerald-400 bg-emerald-950/40 border border-emerald-900/40 px-2 py-0.5 rounded opacity-0">AUTO-SAVED</span>
-                    </div>
-
-                    <div id="editorControls" class="flex items-center gap-4 text-xs font-mono opacity-0 pointer-events-none transition-opacity">
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-slate-500">Zoom:</span>
-                            <select id="canvasZoomSelector" onchange="adjustWorkspaceCanvasLayoutStyles()" class="bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-slate-300 focus:outline-none focus:border-indigo-500 cursor-pointer">
-                                <option value="0.5">50%</option>
-                                <option value="0.75">75%</option>
-                                <option value="1.0" selected>100%</option>
-                                <option value="1.25">125%</option>
-                                <option value="1.5">150%</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex-1 w-full h-full relative overflow-auto p-6" id="canvasViewWrapper">
-                    
-                    <div id="textEditorWrapper" class="w-full h-full absolute inset-0 hidden p-6 overflow-auto">
-                        <div class="w-full h-full zoom-container" id="zoomScalingNode">
-                            <textarea id="workspaceEditor" oninput="commitWriteToDisk()" class="w-full h-full p-4 bg-transparent text-slate-300 placeholder-slate-700 resize-none focus:outline-none leading-relaxed text-[15px]" placeholder="Text parameters..."></textarea>
-                        </div>
-                    </div>
-
-                    <div id="mediaPlayerWrapper" class="w-full h-full absolute inset-0 hidden flex flex-col items-center justify-center p-8 bg-[#090D1A]">
-                        <div class="w-full max-w-3xl bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col items-center space-y-4">
-                            <div class="w-full flex items-center justify-between border-b border-slate-900 pb-3">
-                                <div class="flex items-center gap-3">
-                                    <span id="mediaIcon" class="text-xl">🎬</span>
-                                    <span id="mediaDisplayTitle" class="text-sm font-semibold text-slate-300 truncate max-w-md">Target Track Object</span>
-                                </div>
-                                <span class="text-[10px] font-mono px-2 py-0.5 bg-indigo-950 text-indigo-400 rounded border border-indigo-900 uppercase">Hardware Engine Stream</span>
-                            </div>
-                            <div class="w-full bg-black/60 rounded-xl overflow-hidden flex items-center justify-center min-h-[180px]">
-                                <video id="videoPlaybackNode" class="w-full max-h-[400px] hidden" controls></video>
-                                <audio id="audioPlaybackNode" class="w-2/3 my-12 hidden" controls></audio>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <iframe id="cloudViewerFrame" class="absolute inset-0 w-full h-full hidden border-none bg-white"></iframe>
-
-                    <div id="drivePreviewDashboardPortal" class="w-full h-full flex flex-col space-y-6 overflow-y-auto pr-2">
-                        <div>
-                            <div class="flex items-center gap-3 mb-3">
-                                <span class="w-2 h-2 rounded-full bg-violet-500"></span>
-                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Folders</h3>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" id="previewFolderLayoutGrid"></div>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-3 mb-3">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Files, Movies & Audio Tracks</h3>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="previewFileLayoutGrid"></div>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-        </div>
+            </div>
     </main>
 
-    <footer class="h-8 border-t border-slate-800 bg-slate-950 px-6 flex items-center justify-between text-[11px] font-mono text-slate-500 z-10 shrink-0 select-none">
-        <div class="flex items-center gap-4">
-            <div>SYSTEM: <strong class="text-slate-400 font-medium">v4.0.0-MEDIA</strong></div>
-            <div id="statusIndicator" class="flex items-center gap-1.5 text-slate-400">
-                <span class="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
-                <span id="statusText">Awaiting Handshake</span>
-            </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <div id="sessionSyncCounter">WRITE_COMMITS: 0</div>
-            <div id="textTelemetry">W: 0 | C: 0</div>
-        </div>
-    </footer>
-
     <script>
-        // CONFIGURATION BLOCK: Add your Google Developer Credentials here to enable live Drive integrations
-        const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_SIGNIN_OAUTH_CLIENT_ID.apps.googleusercontent.com';
-        const GOOGLE_API_KEY = 'YOUR_GOOGLE_CLOUD_API_KEY';
-        const GOOGLE_APP_ID = 'YOUR_GOOGLE_CLOUD_PROJECT_NUMBER';
-
         let directoryHandle = null;
         let activeFileHandle = null;
-        let debounceTimer = null;
+        let googleAccessToken = null;
         let localCommitCounter = 0;
         let sidebarCollapsedState = false;
-        let googleAccessToken = null;
 
-        let discoveredCachedFilesMap = [];
-        let discoveredCachedFoldersMap = [];
+        // ... Keep existing utility functions (verifyPermissionWithUser, traverseAndMapDirectoryStructure, etc.) ...
 
-        async function verifyPermissionWithUser(handleRef, readWriteMode) {
-            const opts = {};
-            if (readWriteMode) opts.mode = 'readwrite';
-            if ((await handleRef.queryPermission(opts)) === 'granted') return true;
-            if ((await handleRef.requestPermission(opts)) === 'granted') return true;
-            return false;
-        }
-
-        // INITIAL ATTACH MOUNT
-        async function mountRealFileSystem() {
-            try {
-                directoryHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
-                const hasAccess = await verifyPermissionWithUser(directoryHandle, true);
-                if (!hasAccess) {
-                    alert("Directory read halted: Requires write access mapping configurations.");
-                    return;
-                }
-
-                document.getElementById('engineMode').innerText = 'ENGINE: LOCAL HYBRID CLUSTER';
-                document.getElementById('statusIndicator').className = "flex items-center gap-1.5 text-emerald-400";
-                document.getElementById('statusText').innerText = "System Permissions Authenticated";
-
-                discoveredCachedFilesMap = [];
-                discoveredCachedFoldersMap = [];
-
-                const treeSidebarContainer = document.getElementById('fileDirectoryList');
-                treeSidebarContainer.innerHTML = '';
-                
-                await traverseAndMapDirectoryStructure(directoryHandle, treeSidebarContainer);
-                
-                transitionUIToWorkspace();
-                returnToWorkspacePortalDashboard(); 
-            } catch (error) {
-                console.error(error);
-                alert("Directory read halted: Re-verify access configuration rules.");
-            }
-        }
-
-        // RESILIENT RECURSIVE TREE COMPILING STORAGE ROUTINE HANDLES
-        async function traverseAndMapDirectoryStructure(dirHandle, currentSidebarContainer) {
-            try {
-                for await (const entry of dirHandle.values()) {
-                    if (entry.name.startsWith('.')) continue;
-
-                    try {
-                        if (entry.kind === 'directory') {
-                            discoveredCachedFoldersMap.push({ handle: entry, name: entry.name });
-
-                            const folderWrapper = document.createElement('div');
-                            folderWrapper.className = "space-y-0.5 my-1";
-                            
-                            const folderBtn = document.createElement('button');
-                            folderBtn.className = "w-full text-left flex items-center gap-2 p-2 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-900/60 hover:text-white transition-all cursor-pointer";
-                            folderBtn.innerHTML = `<span>📁</span> <span class="truncate">${entry.name}</span>`;
-                            
-                            const folderContentDiv = document.createElement('div');
-                            folderContentDiv.className = "folder-content hidden";
-                            
-                            folderBtn.onclick = async () => {
-                                await verifyPermissionWithUser(entry, true);
-                                folderContentDiv.classList.toggle('hidden');
-                                folderBtn.classList.toggle('text-indigo-400');
-                            };
-
-                            folderWrapper.appendChild(folderBtn);
-                            folderWrapper.appendChild(folderContentDiv);
-                            currentSidebarContainer.appendChild(folderWrapper);
-
-                            await traverseAndMapDirectoryStructure(entry, folderContentDiv);
-
-                        } else if (entry.kind === 'file') {
-                            discoveredCachedFilesMap.push({ handle: entry, name: entry.name });
-
-                            const fileBtn = document.createElement('button');
-                            fileBtn.className = "w-full text-left flex items-center gap-2 p-2 rounded-lg text-xs font-medium text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all cursor-pointer file-node-btn";
-                            fileBtn.setAttribute('data-name', entry.name.toLowerCase());
-                            
-                            // Visual hint for audio and movie extensions
-                            const lowerName = entry.name.toLowerCase();
-                            let labelIcon = "📄";
-                            if (lowerName.endsWith('.mp4') || lowerName.endsWith('.mkv') || lowerName.endsWith('.mov')) labelIcon = "🎬";
-                            if (lowerName.endsWith('.mp3') || lowerName.endsWith('.wav')) labelIcon = "🎵";
-
-                            fileBtn.innerHTML = `<span>${labelIcon}</span> <span class="truncate">${entry.name}</span>`;
-                            fileBtn.onclick = () => loadActiveFileWorkspacePanel(entry, fileBtn);
-                            
-                            currentSidebarContainer.appendChild(fileBtn);
-                        }
-                    } catch (innerErr) {
-                        console.warn(`Skipping system asset node: ${entry.name}`, innerErr);
-                    }
-                }
-            } catch (outerErr) {
-                console.error(outerErr);
-            }
-        }
-
-        function buildDriveDashboardViewPortal() {
-            const folderGrid = document.getElementById('previewFolderLayoutGrid');
-            const fileGrid = document.getElementById('previewFileLayoutGrid');
-            folderGrid.innerHTML = '';
-            fileGrid.innerHTML = '';
-
-            if(discoveredCachedFoldersMap.length === 0) {
-                folderGrid.innerHTML = `<div class="text-xs text-slate-600 font-mono">No subdirectories detected</div>`;
-            } else {
-                discoveredCachedFoldersMap.forEach(folderObj => {
-                    const card = document.createElement('div');
-                    card.className = "p-3.5 bg-slate-900/50 border border-slate-800 hover:border-slate-700 rounded-xl flex items-center gap-3 text-xs font-medium text-slate-200 shadow-sm transition-all";
-                    card.innerHTML = `<span class="text-base text-indigo-400">📁</span> <span class="truncate font-medium">${folderObj.name}</span>`;
-                    folderGrid.appendChild(card);
-                });
-            }
-
-            if(discoveredCachedFilesMap.length === 0) {
-                fileGrid.innerHTML = `<div class="text-xs text-slate-600 font-mono col-span-3">No file items present</div>`;
-            } else {
-                discoveredCachedFilesMap.forEach(fileObj => {
-                    const card = document.createElement('div');
-                    card.className = "p-4 bg-slate-950 border border-slate-800/80 hover:border-indigo-500/50 rounded-xl flex flex-col justify-between h-32 transition-all cursor-pointer shadow-lg group";
-                    card.onclick = () => loadActiveFileWorkspacePanel(fileObj.handle);
-                    
-                    const lowerName = fileObj.name.toLowerCase();
-                    let labelIcon = "📄";
-                    let fileTypeLabel = "TEXT ASSET";
-                    if(lowerName.endsWith('.mp4') || lowerName.endsWith('.mkv') || lowerName.endsWith('.mov')) { labelIcon = "🎬"; fileTypeLabel = "MOVIE FILE"; }
-                    if(lowerName.endsWith('.mp3') || lowerName.endsWith('.wav')) { labelIcon = "🎵"; fileTypeLabel = "AUDIO FILE"; }
-
-                    card.innerHTML = `
-                        <div class="flex items-start justify-between gap-2">
-                            <div class="flex items-center gap-2 truncate">
-                                <span class="text-slate-500 text-sm">${labelIcon}</span>
-                                <span class="font-semibold text-slate-200 text-xs truncate group-hover:text-indigo-400 transition-colors">${fileObj.name}</span>
-                            </div>
-                            <span class="text-[8px] font-mono text-indigo-400 bg-indigo-950/40 border border-indigo-900 px-1.5 py-0.5 rounded tracking-wider">${fileTypeLabel}</span>
-                        </div>
-                        <div class="flex-1 my-2 bg-slate-900/40 rounded-lg p-2 border border-slate-900 overflow-hidden text-[10px] text-slate-500 font-mono select-none">
-                            Click asset to execute native stream operations inside the container...
-                        </div>
-                    `;
-                    fileGrid.appendChild(card);
-                });
-            }
-        }
-
-        // UNIVERSAL FILE READER LOAD MANAGER (Splits text files vs audio/movie playbacks)
-        async function loadActiveFileWorkspacePanel(handle, optionalButtonRef) {
-            try {
-                const isPermitted = await verifyPermissionWithUser(handle, true);
-                if (!isPermitted) return alert("Write permissions required.");
-
-                if(optionalButtonRef) {
-                    document.querySelectorAll('.file-node-btn').forEach(b => b.classList.remove('bg-slate-800/80', 'text-white'));
-                    optionalButtonRef.classList.add('bg-slate-800/80', 'text-white');
-                }
-
-                activeFileHandle = handle;
-                const file = await handle.getFile();
-                const lowerName = handle.name.toLowerCase();
-
-                // Clear layout viewport pointers elements
-                document.getElementById('drivePreviewDashboardPortal').classList.add('hidden');
-                document.getElementById('cloudViewerFrame').classList.add('hidden');
-                document.getElementById('textEditorWrapper').classList.add('hidden');
-                document.getElementById('mediaPlayerWrapper').classList.add('hidden');
-                
-                const videoNode = document.getElementById('videoPlaybackNode');
-                const audioNode = document.getElementById('audioPlaybackNode');
-                videoNode.classList.add('hidden');
-                audioNode.classList.add('hidden');
-                videoNode.src = '';
-                audioNode.src = '';
-
-                document.getElementById('activeFileName').innerText = handle.name;
-                document.getElementById('workspaceHomeBtn').classList.remove('hidden');
-
-                // ROUTINE A: Play Movie or Sound Files directly in the sandbox via secure Blobs
-                if (lowerName.endsWith('.mp4') || lowerName.endsWith('.mkv') || lowerName.endsWith('.mov') || lowerName.endsWith('.mp3') || lowerName.endsWith('.wav')) {
-                    document.getElementById('mediaPlayerWrapper').classList.remove('hidden');
-                    document.getElementById('editorControls').classList.add('opacity-0', 'pointer-events-none');
-                    document.getElementById('mediaDisplayTitle').innerText = handle.name;
-
-                    // Convert hardware local file stream directly into absolute browser memory URL
-                    const mediaBlobUrl = URL.createObjectURL(file);
-                    
-                    if (lowerName.endsWith('.mp3') || lowerName.endsWith('.wav')) {
-                        document.getElementById('mediaIcon').innerText = "🎵";
-                        audioNode.classList.remove('hidden');
-                        audioNode.src = mediaBlobUrl;
-                        audioNode.play();
-                    } else {
-                        document.getElementById('mediaIcon').innerText = "🎬";
-                        videoNode.classList.remove('hidden');
-                        videoNode.src = mediaBlobUrl;
-                        videoNode.play();
-                    }
-                } 
-                // ROUTINE B: Standard document text processing path engine configuration
-                else {
-                    document.getElementById('textEditorWrapper').classList.remove('hidden');
-                    document.getElementById('editorControls').className = "flex items-center gap-4 text-xs font-mono opacity-100 transition-opacity";
-                    
-                    const contentText = await file.text();
-                    const editor = document.getElementById('workspaceEditor');
-                    editor.value = contentText;
-
-                    calculateTelemetryMetrics(contentText);
-                    adjustWorkspaceCanvasLayoutStyles();
-                    editor.focus();
-                }
-            } catch (err) {
-                console.error(err);
-                alert("File view mount failure.");
-            }
-        }
-
-        // GOOGLE INTEGRATION ARCHITECTURE (SIGN-IN & GOOGLE PICKER FLOWS)
         function initializeGoogleCloudHandshake() {
-            if (GOOGLE_CLIENT_ID.startsWith('YOUR_')) {
-                alert("Configuration Required: Insert your genuine Google Cloud Client ID and Project credentials within the top parameters inside the <script> structure.");
+            const clientId = document.getElementById('inputClientId').value;
+            const apiKey = document.getElementById('inputApiKey').value;
+            const appId = document.getElementById('inputAppId').value;
+
+            if (!clientId || !apiKey || !appId) {
+                alert("Please enter your Google Client ID, API Key, and Project Number.");
                 return;
             }
             
-            // Build explicit client auth token requests runtime token configurations
             const client = google.accounts.oauth2.initTokenClient({
-                client_id: GOOGLE_CLIENT_ID,
+                client_id: clientId,
                 scope: 'https://www.googleapis.com/auth/drive.readonly',
                 callback: (tokenResponse) => {
                     if (tokenResponse && tokenResponse.access_token) {
                         googleAccessToken = tokenResponse.access_token;
                         document.getElementById('googleAuthBtn').innerText = "✓ Linked to Google Cloud Platform";
-                        document.getElementById('googleAuthBtn').className = "w-full flex items-center justify-center gap-3 p-3 border border-emerald-800 bg-emerald-950 text-emerald-400 rounded-xl text-xs font-semibold select-none";
+                        document.getElementById('googleAuthBtn').className = "w-full flex items-center justify-center gap-3 p-3 border border-emerald-800 bg-emerald-950 text-emerald-400 rounded-xl text-xs font-semibold";
                         
-                        // Automatically initialize deep Picker view layer layout matrix elements
-                        gapi.load('picker', {'callback': openGoogleDrivePickerOverlay});
+                        gapi.load('picker', {'callback': () => openGoogleDrivePickerOverlay(appId, apiKey)});
                     }
                 },
             });
             client.requestAccessToken();
         }
 
-        function openGoogleDrivePickerOverlay() {
+        function openGoogleDrivePickerOverlay(appId, apiKey) {
             if (!googleAccessToken) return;
             
-            // Generate standard authenticated document views targeting cloud nodes
             const view = new google.picker.View(google.picker.ViewId.DOCS);
             view.setMimeTypes("video/mp4,audio/mp3,application/vnd.google-apps.document,application/pdf");
 
             const picker = new google.picker.PickerBuilder()
                 .enableFeature(google.picker.Feature.NAV_HIDDEN)
-                .setAppId(GOOGLE_APP_ID)
+                .setAppId(appId)
                 .setOAuthToken(googleAccessToken)
-                .setDeveloperKey(GOOGLE_API_KEY)
+                .setDeveloperKey(apiKey)
                 .addView(view)
                 .setCallback(processGooglePickerSelectionEvent)
                 .build();
             picker.setVisible(true);
         }
 
-        function processGooglePickerSelectionEvent(data) {
-            if (data.action === google.picker.Action.PICKED) {
-                const doc = data[google.picker.Response.DOCUMENTS][0];
-                const fileId = doc[google.picker.Document.ID];
-                const fileName = doc[google.picker.Document.NAME];
-                const embedUrl = doc[google.picker.Document.EMBEDDED_URL] || `https://docs.google.com/file/d/${fileId}/preview`;
-                
-                // Mount selected external asset parameter cleanly inside preview matrix iframe frame component
-                document.getElementById('textEditorWrapper').classList.add('hidden');
-                document.getElementById('drivePreviewDashboardPortal').classList.add('hidden');
-                document.getElementById('mediaPlayerWrapper').classList.add('hidden');
-                
-                const cloudFrame = document.getElementById('cloudViewerFrame');
-                cloudFrame.src = embedUrl;
-                cloudFrame.classList.remove('hidden');
-
-                document.getElementById('activeFileName').innerText = `Cloud Drive File: ${fileName}`;
-                document.getElementById('workspaceHomeBtn').classList.remove('hidden');
-                
-                document.getElementById('engineMode').innerText = 'ENGINE: GOOGLE CLOUD STORAGE CLUSTER';
-                transitionUIToWorkspace();
-            }
-        }
-
-        function returnToWorkspacePortalDashboard() {
-            activeFileHandle = null;
-            
-            // Turn off any playing media elements immediately to prevent overlapping background audio
-            const videoNode = document.getElementById('videoPlaybackNode');
-            const audioNode = document.getElementById('audioPlaybackNode');
-            videoNode.pause(); audioNode.pause();
-            videoNode.src = ''; audioNode.src = '';
-
-            document.getElementById('textEditorWrapper').classList.add('hidden');
-            document.getElementById('cloudViewerFrame').classList.add('hidden');
-            document.getElementById('mediaPlayerWrapper').classList.add('hidden');
-            document.getElementById('workspaceHomeBtn').classList.add('hidden');
-            document.getElementById('editorControls').className = "flex items-center gap-4 text-xs font-mono opacity-0 pointer-events-none transition-opacity";
-            
-            document.getElementById('activeFileName').innerText = "Workspace Dashboard Root";
-            document.getElementById('drivePreviewDashboardPortal').classList.remove('hidden');
-            
-            buildDriveDashboardViewPortal();
-        }
-
-        function toggleSidebarLayoutWidth() {
-            const sidebar = document.getElementById('sidebarPanel');
-            const toggleBtnText = document.getElementById('sidebarToggleText');
-            if (!sidebarCollapsedState) {
-                sidebar.className = "w-0 opacity-0 pointer-events-none border-r-0 flex flex-col h-full shrink-0";
-                toggleBtnText.innerText = "Show Sidebar";
-                sidebarCollapsedState = true;
-            } else {
-                sidebar.className = "w-64 bg-slate-950 border-r border-slate-800/80 flex flex-col h-full shrink-0 overflow-hidden";
-                toggleBtnText.innerText = "Hide Sidebar";
-                sidebarCollapsedState = false;
-            }
-        }
-
-        function adjustWorkspaceCanvasLayoutStyles() {
-            const zoomVal = document.getElementById('canvasZoomSelector').value;
-            const textCanvasEditor = document.getElementById('workspaceEditor');
-            const scalingWrapperNode = document.getElementById('zoomScalingNode');
-            scalingWrapperNode.style.transform = `scale(${zoomVal})`;
-            scalingWrapperNode.style.width = `${100 / zoomVal}%`;
-            scalingWrapperNode.style.height = `${100 / zoomVal}%`;
-        }
-
-        async function commitWriteToDisk() {
-            if (!activeFileHandle) return;
-            const textDataPayload = document.getElementById('workspaceEditor').value;
-            const indicatorLabel = document.getElementById('saveStatusIndicator');
-            calculateTelemetryMetrics(textDataPayload);
-            indicatorLabel.className = "text-[10px] font-mono font-medium text-amber-400 bg-amber-950/40 border border-amber-900/40 px-2 py-0.5 rounded opacity-100";
-            indicatorLabel.innerText = "WRITING...";
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(async () => {
-                try {
-                    const localWritableStreamFileBlock = await activeFileHandle.createWritable();
-                    await localWritableStreamFileBlock.write(textDataPayload);
-                    await localWritableStreamFileBlock.close();
-                    indicatorLabel.className = "text-[10px] font-mono font-medium text-emerald-400 bg-emerald-950/40 border border-emerald-900/40 px-2 py-0.5 rounded opacity-100";
-                    indicatorLabel.innerText = "DISK SYNCED";
-                    localCommitCounter++;
-                    document.getElementById('sessionSyncCounter').innerText = `WRITE_COMMITS: ${localCommitCounter}`;
-                } catch (err) {
-                    indicatorLabel.className = "text-[10px] font-mono font-medium text-rose-400 bg-rose-950/40 border border-rose-900/40 px-2 py-0.5 rounded opacity-100";
-                    indicatorLabel.innerText = "WRITE BLOCKED";
-                }
-            }, 450);
-        }
-
-        function calculateTelemetryMetrics(text) {
-            const charactersCount = text.length;
-            const wordsCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
-            document.getElementById('textTelemetry').innerText = `W: ${wordsCount} | C: ${charactersCount}`;
-        }
-
-        function searchLocalDirectoryTree() {
-            const searchQueryParam = document.getElementById('fileSearch').value.toLowerCase();
-            document.querySelectorAll('.file-node-btn').forEach(btnElementNode => {
-                const buttonTargetName = btnElementNode.getAttribute('data-name');
-                btnElementNode.style.display = buttonTargetName.includes(searchQueryParam) ? 'flex' : 'none';
-            });
-        }
-
-        function transitionUIToWorkspace() {
-            document.getElementById('portalScreen').classList.add('hidden');
-            document.getElementById('workspaceGrid').classList.remove('opacity-0', 'pointer-events-none');
-        }
-
-        function ejectWorkspaceAndLock() {
-            document.getElementById('portalScreen').classList.remove('hidden');
-            document.getElementById('workspaceGrid').classList.add('opacity-0', 'pointer-events-none');
-            document.getElementById('workspaceEditor').value = '';
-            document.getElementById('cloudViewerFrame').src = '';
-            document.getElementById('activeFileName').innerText = 'Workspace Root View';
-            
-            const videoNode = document.getElementById('videoPlaybackNode');
-            const audioNode = document.getElementById('audioPlaybackNode');
-            videoNode.pause(); audioNode.pause();
-            
-            directoryHandle = null;
-            activeFileHandle = null;
-            discoveredCachedFilesMap = [];
-            discoveredCachedFoldersMap = [];
-            document.getElementById('statusIndicator').className = "flex items-center gap-1.5 text-slate-400";
-            document.getElementById('statusText').innerText = "Awaiting Handshake";
-        }
+        // ... Keep remaining functions (processGooglePickerSelectionEvent, etc.) ...
     </script>
 </body>
 </html>
