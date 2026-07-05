@@ -63,6 +63,17 @@
                             Sign in to Google Account
                         </button>
                     </div>
+
+                    <div class="mt-6 pt-6 border-t border-slate-800 text-left">
+                        <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3">How to get your credentials:</h3>
+                        <ol class="text-[10px] text-slate-500 space-y-2 list-decimal list-inside">
+                            <li>Go to <a href="https://console.cloud.google.com/" target="_blank" class="text-indigo-400 hover:underline">Google Cloud Console</a>.</li>
+                            <li>Create a new project.</li>
+                            <li>Enable the <span class="text-slate-300">Google Drive API</span> and <span class="text-slate-300">Google Picker API</span>.</li>
+                            <li>In "Credentials", create an <span class="text-slate-300">OAuth 2.0 Client ID</span> (Web Application).</li>
+                            <li>Copy your <span class="text-slate-300">Client ID</span>, <span class="text-slate-300">API Key</span>, and <span class="text-slate-300">Project Number</span> above.</li>
+                        </ol>
+                    </div>
                 </div>
             </div>
         </div>
@@ -72,14 +83,14 @@
     </main>
 
     <script>
+        // Configuration state variables (no longer hardcoded)
         let directoryHandle = null;
         let activeFileHandle = null;
         let googleAccessToken = null;
-        let localCommitCounter = 0;
-        let sidebarCollapsedState = false;
+        let discoveredCachedFilesMap = [];
+        let discoveredCachedFoldersMap = [];
 
-        // ... Keep existing utility functions (verifyPermissionWithUser, traverseAndMapDirectoryStructure, etc.) ...
-
+        // Logic to use runtime inputs instead of static constants
         function initializeGoogleCloudHandshake() {
             const clientId = document.getElementById('inputClientId').value;
             const apiKey = document.getElementById('inputApiKey').value;
@@ -123,7 +134,7 @@
             picker.setVisible(true);
         }
 
-        // ... Keep remaining functions (processGooglePickerSelectionEvent, etc.) ...
+        // ... (Keep your remaining logic for file system handling, UI transitions, etc.)
     </script>
 </body>
 </html>
